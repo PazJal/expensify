@@ -1,4 +1,3 @@
-import ReactShallowRenderer from 'react-test-renderer/shallow';
 import React from 'react';
 import {shallow} from 'enzyme';
 
