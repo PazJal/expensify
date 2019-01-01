@@ -12,6 +12,7 @@ import configureStore from './store/configureStore';
 import {addExpense} from './actions/expenses';
 import './firebase/firebase';
 
+
 const store = configureStore();
 
 store.dispatch(addExpense({description : 'water bill' , amount : 4500 }));
