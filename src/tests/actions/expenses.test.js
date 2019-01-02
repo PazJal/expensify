@@ -1,4 +1,6 @@
-import { startAddExpense, addExpense , editExpense , removeExpense, setExpenses, startSetExpenses, startRemoveExpense } from '../../actions/expenses';
+import { startAddExpense, addExpense , editExpense , 
+  removeExpense, setExpenses, startSetExpenses, 
+  startRemoveExpense , startEditExpense } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 
 import database from '../../firebase/firebase';
@@ -120,17 +122,40 @@ test('should fetch data from firebase' , (done) => {
 
 test('should remove an expense from firebase' , (done) => {
   const store = createMockStore({});
-  store.dispatch(startRemoveExpense({id:'1'})).then(() => {
+  const id = expenses[2].id;
+  store.dispatch(startRemoveExpense({id})).then(() => {
     const actions = store.getActions();
     expect(actions[0]).toEqual({
       type: 'REMOVE_EXPENSE',
-      id: '1'
+      id
     });
   }).then(() => {
-    database.ref('expenses/1').once('value').then((snapshot) => {
+    database.ref(`expenses/${id}`).once('value').then((snapshot) => {
       expect(snapshot.val()).toBe(null);
       done();
     });
     
   });
+});
+
+test('should edit an existing expense on firebase' , (done) => {
+  const store = createMockStore({});
+  const id = expenses[1].id;
+  const updates ={
+    description: 'New description',
+    note: 'new note',
+    createdAt: 0,
+    amount: 9999
+  }
+  store.dispatch(startEditExpense(id, updates)).then(() => {
+    const actions = store.getActions();
+    expect(actions[0]).toEqual({
+      type: 'EDIT_EXPENSE',
+      id,
+      updates
+    });
+    return database.ref(`expenses/${id}`).once('value').then((snapshot) => {
+      expect(snapshot.val()).toEqual(updates);
+    });
+  }).then(() => done());
 });
