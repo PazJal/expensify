@@ -154,8 +154,9 @@ test('should edit an existing expense on firebase' , (done) => {
       id,
       updates
     });
-    return database.ref(`expenses/${id}`).once('value').then((snapshot) => {
-      expect(snapshot.val()).toEqual(updates);
-    });
-  }).then(() => done());
+    return database.ref(`expenses/${id}`).once('value')
+  }).then((snapshot) => {
+    expect(snapshot.val()).toEqual(updates);
+    done();
+  });
 });
