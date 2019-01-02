@@ -71,3 +71,12 @@ test('should not edit expense if the id is not valid.' , () => {
   const state = expenseReducer(expenses , action);
   expect(state).toEqual(expenses);
 });
+
+test('should set expenses' , () => {
+  const action = {
+    type: 'SET_EXPENSES',
+    expenses
+  }
+  const state = expenseReducer({hello:'Hello'} , action);
+  expect(state).toEqual(expenses);
+});
