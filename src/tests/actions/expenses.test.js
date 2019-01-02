@@ -1,4 +1,4 @@
-import { startAddExpense, addExpense , editExpense , removeExpense, setExpenses, startSetExpenses } from '../../actions/expenses';
+import { startAddExpense, addExpense , editExpense , removeExpense, setExpenses, startSetExpenses, startRemoveExpense } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 
 import database from '../../firebase/firebase';
@@ -116,5 +116,21 @@ test('should fetch data from firebase' , (done) => {
     });
     done();
   });
+});
 
+test('should remove an expense from firebase' , (done) => {
+  const store = createMockStore({});
+  store.dispatch(startRemoveExpense({id:'1'})).then(() => {
+    const actions = store.getActions();
+    expect(actions[0]).toEqual({
+      type: 'REMOVE_EXPENSE',
+      id: '1'
+    });
+  }).then(() => {
+    database.ref('expenses/1').once('value').then((snapshot) => {
+      expect(snapshot.val()).toBe(null);
+      done();
+    });
+    
+  });
 });
